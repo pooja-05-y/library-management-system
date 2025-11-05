@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Admins</title>
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="bg-light">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="dashboard.html">📚 Library System</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="add_book.html">Add Book</a></li>
+          <li class="nav-item"><a class="nav-link" href="view_books.html">View Books</a></li>
+          <li class="nav-item"><a class="nav-link" href="issue_book.html">Issue Book</a></li>
+          <li class="nav-item"><a class="nav-link" href="return_book.html">Return Book</a></li>
+          <li class="nav-item"><a class="nav-link" href="manage_students.html">Manage Students</a></li>
+          <li class="nav-item"><a class="nav-link active" href="manage_admins.html">Manage Admins</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="container mt-5">
+    <div class="card shadow p-4">
+      <h3 class="text-center fw-bold text-primary mb-4">👩‍💻 Manage Admins</h3>
+
+      <!-- Add Admin Form -->
+      <form id="adminForm" class="mb-4">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="adminName" class="form-label">Name</label>
+            <input type="text" id="adminName" class="form-control" placeholder="Enter admin name" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="adminUsername" class="form-label">Username</label>
+            <input type="text" id="adminUsername" class="form-control" placeholder="Enter username" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="adminEmail" class="form-label">Email</label>
+            <input type="email" id="adminEmail" class="form-control" placeholder="Enter email" required />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-2">Add Admin</button>
+      </form>
+
+      <!-- Search bar -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <input type="text" id="adminSearchBox" class="form-control" placeholder="Search by name or username" />
+        </div>
+      </div>
+
+      <!-- Admins table -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle" id="adminsTable">
+          <thead class="table-primary text-center">
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminsBody">
+            <!-- Admin rows inserted by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/manage_admins.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
