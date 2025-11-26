@@ -2,34 +2,49 @@ document.addEventListener("DOMContentLoaded", () => {
     const tableBody = document.getElementById("tableBody");
     const searchBox = document.getElementById("searchBox");
   
-    // Sample issued books data
-    const issuedBooks = [
-      {
-        student: "Pooja Yadav",
-        book: "Atomic Habits",
-        issueDate: "2025-11-01",
-        returnDate: "2025-11-10",
-        status: "Issued",
-      },
-      {
-        student: "Rohan Sharma",
-        book: "The Psychology of Money",
-        issueDate: "2025-10-28",
-        returnDate: "2025-11-05",
-        status: "Overdue",
-      },
-      {
-        student: "Neha Singh",
-        book: "The Great Gatsby",
-        issueDate: "2025-11-03",
-        returnDate: "2025-11-12",
-        status: "Issued",
-      },
-    ];
+    // Load issued books from localStorage
+    let issuedBooks = JSON.parse(localStorage.getItem("issuedBooks")) || [];
+  
+    // Auto-update overdue status
+    function updateOverdueStatus() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      issuedBooks.forEach(book => {
+        if (book.status === "Issued") {
+          const returnDate = new Date(book.returnDate);
+          returnDate.setHours(0, 0, 0, 0);
+          
+          if (today > returnDate) {
+            book.status = "Overdue";
+          }
+        }
+      });
+      
+      saveBooks();
+    }
+  
+    function saveBooks() {
+      try {
+        localStorage.setItem("issuedBooks", JSON.stringify(issuedBooks));
+      } catch (error) {
+        console.error("Error saving issued books:", error);
+      }
+    }
   
     // Render issued books in table
     function renderBooks(data) {
       tableBody.innerHTML = "";
+      
+      if (data.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center text-muted">No issued books found</td>
+          </tr>
+        `;
+        return;
+      }
+      
       data.forEach((b, index) => {
         const row = `
           <tr>
@@ -49,9 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
             </td>
             <td class="text-center">
               ${
-                b.status === "Issued"
-                  ? `<button class="btn btn-sm btn-outline-success return-btn">Mark Returned</button>`
-                  : "-"
+                b.status === "Issued" || b.status === "Overdue"
+                  ? `<button class="btn btn-sm btn-outline-success return-btn" data-index="${index}">Mark Returned</button>`
+                  : b.actualReturnDate || "-"
               }
             </td>
           </tr>
@@ -60,16 +75,28 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   
+    // Update overdue status on load
+    updateOverdueStatus();
+  
     // Initial render
     renderBooks(issuedBooks);
   
     // Handle "Mark Returned" button
     tableBody.addEventListener("click", (e) => {
-      if (e.target.classList.contains("return-btn")) {
-        const rowIndex = e.target.closest("tr").rowIndex - 1;
-        issuedBooks[rowIndex].status = "Returned";
-        renderBooks(issuedBooks);
-        alert(`✅ Book "${issuedBooks[rowIndex].book}" marked as returned.`);
+      const returnBtn = e.target.closest(".return-btn");
+      if (returnBtn) {
+        const index = parseInt(returnBtn.dataset.index);
+        const book = issuedBooks[index];
+        
+        if (confirm(`Mark "${book.book}" as returned by ${book.student}?`)) {
+          const today = new Date().toISOString().split('T')[0];
+          book.status = "Returned";
+          book.actualReturnDate = today;
+          
+          saveBooks();
+          renderBooks(issuedBooks);
+          alert(`✅ Book "${book.book}" marked as returned.`);
+        }
       }
     });
   
@@ -79,7 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const filtered = issuedBooks.filter(
         (b) =>
           b.student.toLowerCase().includes(query) ||
-          b.book.toLowerCase().includes(query)
+          b.book.toLowerCase().includes(query) ||
+          b.status.toLowerCase().includes(query)
       );
       renderBooks(filtered);
     });

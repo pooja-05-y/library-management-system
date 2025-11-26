@@ -83,19 +83,19 @@ function showToast(message, type = "success") {
         return;
       }
 
-      // ✅ Prevent duplicate ISBNs
-  const duplicate = books.find(
-    (b, i) => b.isbn === isbn && i !== Number(bookForm.dataset.editing)
-  );
-  if (duplicate) {
-    showAlert(`⚠️ A book with ISBN "${isbn}" already exists.`, "warning");
-    return;
-  }
+      // Prevent duplicate ISBNs
+      const duplicate = books.find(
+        (b, i) => b.isbn === isbn && i !== Number(bookForm.dataset.editing)
+      );
+      if (duplicate) {
+        showToast(`⚠️ A book with ISBN "${isbn}" already exists.`, "warning");
+        return;
+      }
   
       const editingIndex = bookForm.dataset.editing;
   
       if (editingIndex !== undefined && editingIndex !== "") {
-        // 🟦 Update existing book
+        // Update existing book
         books[editingIndex] = { title, author, isbn };
         delete bookForm.dataset.editing;
         showToast(`✏️ Updated book "${title}".`, "info");
@@ -105,7 +105,7 @@ function showToast(message, type = "success") {
         submitBtn.classList.remove("btn-primary");
         submitBtn.classList.add("btn-success");
       } else {
-        // 🟩 Add new book
+        // Add new book
         books.push({ title, author, isbn });
         showToast(`✅ Added book "${title}".`, "success");
       }
@@ -114,24 +114,6 @@ function showToast(message, type = "success") {
       renderBooks(books);
       bookForm.reset();
     });
-
-    function showAlert(message, type = "success") {
-        const alertContainer = document.getElementById("alertContainer");
-        const wrapper = document.createElement("div");
-        wrapper.innerHTML = `
-          <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        `;
-        alertContainer.append(wrapper);
-      
-        // Auto-dismiss after 3 seconds
-        setTimeout(() => {
-          const alert = bootstrap.Alert.getOrCreateInstance(wrapper.querySelector(".alert"));
-          alert.close();
-        }, 3000);
-      }
       
   
     // Edit book
@@ -199,29 +181,34 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
       renderBooks(filtered);
     });
 
-    // 🚪 Logout Button
+    // Logout Button
 document.getElementById("logoutBtn")?.addEventListener("click", (e) => {
     e.preventDefault();
     if (confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
       showToast("You have logged out.", "info");
       setTimeout(() => {
-        window.location.href = "index.html"; // Redirect to dashboard/login
+        window.location.href = "index.html";
       }, 1200);
     }
   });
   
-  // 🚀 Export Books to JSON
+  // Export Books to JSON
 document.getElementById("exportBtn").addEventListener("click", () => {
-    const booksJson = JSON.stringify(books, null, 2); // Format JSON for readability
-    const blob = new Blob([booksJson], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "books.json"; // Default filename for export
-    link.click();
+    try {
+      const booksJson = JSON.stringify(books, null, 2);
+      const blob = new Blob([booksJson], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `books_${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+      showToast("✅ Books exported successfully.", "success");
+    } catch (error) {
+      console.error("Export error:", error);
+      showToast("⚠️ Failed to export books.", "danger");
+    }
   });
 
-  // 📥 Import Books from JSON File
+  // Import Books from JSON File
 document.getElementById("importFileBtn").addEventListener("click", () => {
     const fileInput = document.getElementById("fileInput");
     const file = fileInput.files[0];
@@ -237,15 +224,34 @@ document.getElementById("importFileBtn").addEventListener("click", () => {
       try {
         const importedBooks = JSON.parse(e.target.result);
         
-        if (Array.isArray(importedBooks) && importedBooks.length > 0) {
-          books = importedBooks;
-          saveBooks(); // Save new data to localStorage
-          renderBooks(books); // Refresh table with new books
-          showToast("✅ Books imported successfully.", "success");
-        } else {
-          showToast("⚠️ Invalid file format. Please upload a valid JSON file.", "danger");
+        if (!Array.isArray(importedBooks)) {
+          showToast("⚠️ Invalid file format. Expected an array of books.", "danger");
+          return;
         }
+        
+        if (importedBooks.length === 0) {
+          showToast("⚠️ The file contains no books.", "warning");
+          return;
+        }
+        
+        // Validate book structure
+        const isValid = importedBooks.every(b => b.title && b.author && b.isbn);
+        if (!isValid) {
+          showToast("⚠️ Some books are missing required fields (title, author, isbn).", "danger");
+          return;
+        }
+        
+        books = importedBooks;
+        saveBooks();
+        renderBooks(books);
+        showToast(`✅ ${importedBooks.length} books imported successfully.`, "success");
+        
+        // Close modal and reset file input
+        const modal = bootstrap.Modal.getInstance(document.getElementById("importModal"));
+        modal.hide();
+        fileInput.value = "";
       } catch (error) {
+        console.error("Import error:", error);
         showToast("⚠️ Error reading the file. Please check the file format.", "danger");
       }
     };
