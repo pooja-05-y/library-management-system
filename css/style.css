@@ -138,6 +138,25 @@ body {
     border-radius: 20px;
     font-size: 0.8rem;
   }
+
+  /* Dashboard hover cards */
+  .hover-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .hover-card h5 {
+    color: #333;
+  }
+
+  .hover-card:hover h5 {
+    color: #0d6efd;
+  }
   #studentForm input {
     border-radius: 10px;
   }
