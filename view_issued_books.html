@@ -18,25 +18,25 @@
 </head>
 
 <body class="bg-light">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- Navbar - Fixed at Top -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow">
     <div class="container-fluid">
       <a class="navbar-brand fw-bold" href="dashboard.html">📚 Library System</a>
-      <div class="collapse navbar-collapse">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="add_book.html">Add Book</a></li>
-          <li class="nav-item"><a class="nav-link" href="view_books.html">View Books</a></li>
-          <li class="nav-item"><a class="nav-link" href="issue_book.html">Issue Book</a></li>
-          <li class="nav-item"><a class="nav-link" href="return_book.html">Return Book</a></li>
-          <li class="nav-item"><a class="nav-link active" href="view_issued_books.html">View Issued Books</a></li>
-          <li class="nav-item"><a class="nav-link" href="index.html">Logout</a></li>
+          <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+          <li class="nav-item"><a class="nav-link text-warning fw-bold" href="index.html">Logout</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
   <!-- Content -->
-  <div class="container mt-5">
+  <div class="container navbar-fixed-spacing main-content">
     <div class="card shadow p-4">
       <h3 class="text-center fw-bold text-primary mb-4">📘 View Issued Books</h3>
 

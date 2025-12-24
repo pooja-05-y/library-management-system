@@ -32,33 +32,25 @@
   </head>
 
   <body>
-    <!-- 🌐 Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <!-- Navbar - Fixed at Top -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow">
       <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="index.html">📚 Book Management</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand fw-bold" href="dashboard.html">📚 Library System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">🏠 Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="manage_books.html">📖 Manage Books</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-danger" href="#" id="logoutBtn">🚪 Logout</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+            <li class="nav-item"><a class="nav-link text-warning fw-bold" href="index.html" id="logoutBtn">Logout</a></li>
           </ul>
         </div>
       </div>
     </nav>
 
     <!-- ====== MAIN CONTENT ====== -->
-    <div class="container mt-5">
+    <div class="container navbar-fixed-spacing main-content">
       <h2 class="text-center mb-4">📚 Manage Books</h2>
 
       <!-- ALERT AREA -->
