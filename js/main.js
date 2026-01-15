@@ -50,12 +50,44 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.removeItem("savedUsername");
       }
   
-      // Dummy login logic (to be replaced by backend later)
-      if (userVal === "admin" && passVal === "123456") {
-        window.location.href = "dashboard.html";
-      } else {
-        errorMsg.textContent = "Invalid username or password.";
-      }
+      // Login with backend API
+      loginUser(userVal, passVal);
     });
   });
+
+// Login function using backend API
+async function loginUser(username, password) {
+  const errorMsg = document.getElementById("error-msg");
+  const submitBtn = document.querySelector('button[type="submit"]');
   
+  try {
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Logging in...';
+    
+    const data = await API.login(username, password);
+
+    if (data.success) {
+      // Store token and user info
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('user', JSON.stringify(data.data.user));
+      
+      // Show success message
+      errorMsg.className = 'alert alert-success';
+      errorMsg.textContent = 'Login successful! Redirecting...';
+      
+      // Redirect to dashboard
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 500);
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    errorMsg.className = 'alert alert-danger';
+    errorMsg.textContent = error.message || 'Unable to connect to server. Please try again.';
+    
+    // Reset button
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Login';
+  }
+}
